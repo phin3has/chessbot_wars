@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chess Match Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>♟️</text></svg>">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <span class="chess-icon">♟️</span> AI Chess Match Dashboard
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="refresh-data">
+                            <i class="bi bi-arrow-clockwise"></i> Refresh Data
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Loading Indicator -->
+        <div id="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading match data...</p>
+        </div>
+
+        <!-- Dashboard Content (hidden until data loads) -->
+        <div id="dashboard-content" class="d-none">
+            <!-- Stats Overview Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100 stats-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Games</h5>
+                            <h2 id="total-games" class="card-stat">-</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100 stats-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Draws</h5>
+                            <h2 id="total-draws" class="card-stat">-</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100 stats-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Avg. Invalid Moves</h5>
+                            <h2 id="avg-invalid-moves" class="card-stat">-</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100 stats-card">
+                        <div class="card-body">
+                            <h5 class="card-title">White Win Rate</h5>
+                            <h2 id="white-win-rate" class="card-stat">-</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters Row -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card filter-card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Filters</h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="date-range" class="form-label">Date Range</label>
+                                    <select class="form-select" id="date-range">
+                                        <option value="all" selected>All Time</option>
+                                        <option value="week">Last Week</option>
+                                        <option value="month">Last Month</option>
+                                        <option value="year">Last Year</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="model-filter" class="form-label">Model</label>
+                                    <select class="form-select" id="model-filter">
+                                        <option value="all" selected>All Models</option>
+                                        <!-- Models will be populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="result-filter" class="form-label">Result</label>
+                                    <select class="form-select" id="result-filter">
+                                        <option value="all" selected>All Results</option>
+                                        <option value="win">Wins Only</option>
+                                        <option value="draw">Draws Only</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2 d-flex align-items-end">
+                                    <button id="apply-filters" class="btn btn-primary w-100">Apply Filters</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Wins by Model</h5>
+                            <div class="chart-container">
+                                <canvas id="model-wins-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Wins by Color</h5>
+                            <div class="chart-container">
+                                <canvas id="color-wins-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Game Termination Reasons</h5>
+                            <div class="chart-container">
+                                <canvas id="termination-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card chart-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Invalid Moves by Model</h5>
+                            <div class="chart-container">
+                                <canvas id="invalid-moves-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Games Table -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Games</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>White</th>
+                                            <th>Black</th>
+                                            <th>Result</th>
+                                            <th>Winner</th>
+                                            <th>Termination</th>
+                                            <th>Invalid Moves</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-games-table">
+                                        <!-- Table rows will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-auto py-3 bg-dark text-white">
+        <div class="container text-center">
+            <span>AI Chess Match Dashboard</span>
+        </div>
+    </footer>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Application JS - Load order matters -->
+    <script src="js/supabase.js"></script>
+    <script src="js/statistics.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+/* Main styling for AI Chess Match Dashboard */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chess-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+    color: white;
+}
+
+.stats-card .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.card-stat {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.filter-card {
+    background-color: #ffffff;
+}
+
+.chart-card {
+    background-color: #ffffff;
+}
+
+.chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.footer {
+    margin-top: auto;
+    background-color: #343a40;
+    color: white;
+}
+
+/* Custom styling for table */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Loading spinner */
+#loading {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-stat {
+        font-size: 1.8rem;
+    }
+    
+    .chart-container {
+        height: 200px;
+    }
+}
