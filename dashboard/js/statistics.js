@@ -126,6 +126,9 @@ function calculateInvalidMovesByModel(matchData) {
     const modelGames = {};
     
     matchData.forEach(game => {
+        // Skip games without invalid_moves data
+        if (typeof game.invalid_moves === 'undefined') return;
+        
         // Count white model invalid moves
         if (game.white_model) {
             modelGames[game.white_model] = (modelGames[game.white_model] || 0) + 1;
@@ -151,9 +154,17 @@ function calculateInvalidMovesByModel(matchData) {
         avgInvalidMoves[model] = modelInvalidMoves[model] / modelGames[model];
     });
 
+    // Sort models by average invalid moves (highest first)
+    const sortedModels = Object.keys(avgInvalidMoves).sort((a, b) => {
+        return avgInvalidMoves[b] - avgInvalidMoves[a];
+    });
+
+    // Limit to top 10 models to keep the chart readable
+    const topModels = sortedModels.slice(0, 10);
+
     // Convert to arrays for charting
-    const labels = Object.keys(avgInvalidMoves);
-    const data = Object.values(avgInvalidMoves).map(val => parseFloat(val.toFixed(2)));
+    const labels = topModels;
+    const data = topModels.map(model => parseFloat(avgInvalidMoves[model].toFixed(2)));
 
     return { labels, data };
 }

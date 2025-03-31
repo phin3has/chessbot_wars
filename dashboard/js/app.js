@@ -24,6 +24,35 @@ let currentFilters = {
 
 // Initialize the dashboard
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log("Document ready, checking Supabase availability");
+    
+    // Give a bit more time for Supabase to initialize if needed
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (!supabase && !window.supabaseClient && attempts < maxAttempts) {
+        console.log(`Waiting for Supabase to initialize (attempt ${attempts + 1}/${maxAttempts})...`);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        attempts++;
+        
+        // Try to use the global client if available
+        if (window.supabaseClient) {
+            console.log("Using global supabaseClient");
+            supabase = window.supabaseClient;
+        }
+    }
+    
+    // Check if Supabase is properly initialized
+    if (!supabase && window.supabaseClient) {
+        console.log("Using global supabaseClient as fallback");
+        supabase = window.supabaseClient;
+    }
+    
+    if (!supabase) {
+        console.error("Supabase is not initialized!");
+        alert("Database connection error. Please check console for details.");
+        return;
+    }
     try {
         // Initialize charts
         initializeCharts();

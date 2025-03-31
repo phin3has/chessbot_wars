@@ -157,7 +157,7 @@
                 <div class="col-md-6 mb-4">
                     <div class="card chart-card h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Invalid Moves by Model</h5>
+                            <h5 class="card-title">Avg. Invalid Moves by Model</h5>
                             <div class="chart-container">
                                 <canvas id="invalid-moves-chart"></canvas>
                             </div>
@@ -205,6 +205,14 @@
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Create a global variable for Supabase right away
+        window.supabaseClient = supabase.createClient(
+            'https://wtqgforevtuaigkubwwf.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cWdmb3JldnR1YWlna3Vid3dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI2ODE5MjMsImV4cCI6MjA1ODI1NzkyM30.uccdNnxA2b0TirIAaaQx1LN8wJlUVERnD_ge7GF1Wi0'
+        );
+        console.log('Global supabaseClient initialized:', window.supabaseClient);
+    </script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Application JS - Load order matters -->

@@ -162,6 +162,7 @@ function initializeCharts() {
             }]
         },
         options: {
+            indexAxis: 'y',  // Horizontal bar chart
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -171,14 +172,18 @@ function initializeCharts() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            return `Avg. Invalid Moves: ${context.parsed.y}`;
+                            return `Avg. Invalid Moves: ${context.parsed.x.toFixed(2)}`;
                         }
                     }
                 }
             },
             scales: {
-                y: {
-                    beginAtZero: true
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Average Invalid Moves Per Game'
+                    }
                 }
             }
         }
